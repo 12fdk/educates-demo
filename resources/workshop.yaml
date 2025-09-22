@@ -3,8 +3,8 @@ kind: Workshop
 metadata:
   name: "demo"
 spec:
-  title: "Workshop"
-  description: "Workshop description."
+  title: "DCAI Sandbox"
+  description: "DCAI Sandbox/Demo enviroment"
   publish:
     image: "$(image_repository)/demo-files:$(workshop_version)"
   workshop:
@@ -17,7 +17,7 @@ spec:
       - /README.md
   session:
     namespaces:
-      budget: medium
+      budget: high
     applications:
       terminal:
         enabled: true
@@ -27,8 +27,8 @@ spec:
       console:
         enabled: false
       docker:
-        enabled: false
+        enabled: true
       registry:
-        enabled: false
+        enabled: true
       vcluster:
-        enabled: false
+        enabled: true
