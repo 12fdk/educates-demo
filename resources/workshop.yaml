@@ -17,7 +17,7 @@ spec:
       - /README.md
   session:
     namespaces:
-      budget: high
+      budget: xxx-large
     applications:
       terminal:
         enabled: true
