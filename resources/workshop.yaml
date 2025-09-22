@@ -29,6 +29,6 @@ spec:
       docker:
         enabled: true
       registry:
-        enabled: true
+        enabled: false
       vcluster:
         enabled: false
