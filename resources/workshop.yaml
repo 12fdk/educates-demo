@@ -18,9 +18,6 @@ spec:
   session:
     namespaces:
       budget: x-large
-    readinessProbe:
-      failureThreshold: 60  # Number of attempts (60 * 10s = 10 minutes)
-      periodSeconds: 10     # Check every 10 seconds
     applications:
       terminal:
         enabled: true
@@ -34,4 +31,4 @@ spec:
       registry:
         enabled: true
       vcluster:
-        enabled: true
+        enabled: false
