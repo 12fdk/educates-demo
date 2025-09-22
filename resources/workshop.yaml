@@ -21,11 +21,11 @@ spec:
     applications:
       terminal:
         enabled: true
-        layout: split
+        #layout: split
       editor:
         enabled: true
       console:
-        enabled: false
+        enabled: true
       docker:
         enabled: true
       registry:
