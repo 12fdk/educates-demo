@@ -17,6 +17,8 @@ spec:
       - /README.md
   session:
     namespaces:
+      security:
+        policy: baseline
       budget: x-large
     applications:
       terminal:
@@ -27,7 +29,7 @@ spec:
       console:
         enabled: true
       docker:
-        enabled: false
+        enabled: true
       registry:
         enabled: false
       vcluster:
