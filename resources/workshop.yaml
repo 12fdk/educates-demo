@@ -17,20 +17,24 @@ spec:
       - /README.md
   session:
     namespaces:
-      #security:
-        #policy: baseline
       budget: x-large
     applications:
       terminal:
         enabled: true
-        #layout: split
+        layout: split
       editor:
         enabled: true
       console:
-        enabled: true
+        enabled: false
       docker:
-        enabled: true
+        enabled: false
       registry:
         enabled: false
       vcluster:
         enabled: false
+    ingresses:
+    - name: jupiter
+      port: 8888
+    dashboards:
+    - name: Jupiter
+      url: "$(ingress_protocol)://jupiter-$(session_name).$(ingress_domain)/lab?token=''"
