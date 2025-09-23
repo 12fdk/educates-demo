@@ -27,8 +27,8 @@ spec:
       console:
         enabled: true
       docker:
-        enabled: false
+        enabled: true
       registry:
         enabled: true
       vcluster:
-        enabled: true
+        enabled: false
