@@ -2,6 +2,10 @@ apiVersion: training.educates.dev/v1beta1
 kind: Workshop
 metadata:
   name: "demo"
+  labels:
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
 spec:
   title: "DCAI Sandbox"
   description: "DCAI Sandbox/Demo enviroment"
