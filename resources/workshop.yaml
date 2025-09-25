@@ -16,6 +16,8 @@ spec:
       - /exercises/**
       - /README.md
   session:
+    patches:
+      runtimeClassName: nvidia
     namespaces:
       budget: x-large
     applications:

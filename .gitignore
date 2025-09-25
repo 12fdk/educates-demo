@@ -1,2 +1,4 @@
 workshop/.hugo_build.lock
 workshop/public
+.claude
+claude.md
