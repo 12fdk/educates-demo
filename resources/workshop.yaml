@@ -20,6 +20,8 @@ spec:
       runtimeClassName: nvidia
     namespaces:
       budget: x-large
+      security:
+        policy: baseline
     applications:
       terminal:
         enabled: true
@@ -40,3 +42,24 @@ spec:
     dashboards:
     - name: Jupiter
       url: "$(ingress_protocol)://jupiter-$(session_name).$(ingress_domain)/lab?token=''"
+    objects:
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ollama
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            deployment: ollama
+        strategy:
+          type: Recreate
+        template:
+          metadata:
+            labels:
+              deployment: ollama
+          spec:
+            runtimeClassName: nvidia
+            containers:
+            - name: ollama
+              image: ollama/ollama:latest
