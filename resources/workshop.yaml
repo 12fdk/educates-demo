@@ -104,7 +104,7 @@ spec:
         - ReadWriteOnce
         resources:
           requests:
-            storage: 20Gi
+            storage: 50Gi
     - apiVersion: apps/v1
       kind: Deployment
       metadata:
@@ -133,6 +133,10 @@ spec:
                 value: "false"
               - name: WEBUI_NAME
                 value: "DCAI Open-WebUI"
+              - name: DEFAULT_MODELS
+                value: "qwen3,deepseek-r1,codellama"
+              - name: DEFAULT_MODEL
+                value: "qwen3"
               volumeMounts:
               - name: webui-data
                 mountPath: /app/backend/data
