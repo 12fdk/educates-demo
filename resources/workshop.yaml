@@ -40,12 +40,13 @@ spec:
     - name: jupiter
       port: 8888
     - name: open-webui
-      port: 8080
+      host: open-webui.$(session_namespace)
+      port: 3000
     dashboards:
     - name: Jupiter
       url: "$(ingress_protocol)://jupiter-$(session_name).$(ingress_domain)/lab?token=''"
     - name: Open WebUI
-      url: "$(ingress_protocol)://open-webui-$(session_name).$(ingress_domain)/"
+      url: "$(ingress_protocol)://open-webui-$(session_name).$(ingress_domain)"
     objects:
     - apiVersion: apps/v1
       kind: Deployment
@@ -67,6 +68,13 @@ spec:
             containers:
             - name: ollama
               image: ollama/ollama:latest
+              volumeMounts:
+              - name: ollama-data
+                mountPath: /root/.ollama
+            volumes:  # <- Fixed: moved to correct indentation level
+            - name: ollama-data
+              persistentVolumeClaim:
+                claimName: ollama-pvc
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
@@ -77,11 +85,16 @@ spec:
         resources:
           requests:
             storage: 5Gi
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "3Gi"
-            cpu: "900m"
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: ollama-pvc
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
     - apiVersion: apps/v1
       kind: Deployment
       metadata:
@@ -101,9 +114,15 @@ spec:
               image: ghcr.io/open-webui/open-webui:main
               env:
               - name: OLLAMA_BASE_URL
-                value: "http://ollama:11434"
+                value: "http://ollama.$(session_namespace):11434"
               - name: WEBUI_SECRET_KEY
                 value: "educates-demo-secret-key"
+              - name: WEBUI_AUTH
+                value: "false"
+              - name: ENABLE_VERSION_UPDATE_CHECK
+                value: "false"
+              - name: WEBUI_NAME
+                value: "DCAI Open-WebUI"
               volumeMounts:
               - name: webui-data
                 mountPath: /app/backend/data
@@ -136,7 +155,7 @@ spec:
       spec:
         type: ClusterIP
         ports:
-        - port: 8080
+        - port: 3000
           targetPort: 8080
         selector:
           app: open-webui
