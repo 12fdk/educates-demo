@@ -19,7 +19,7 @@ spec:
     patches:
       runtimeClassName: nvidia
     namespaces:
-      budget: x-large
+      budget: xx-large
       security:
         policy: baseline
     applications:
@@ -39,9 +39,13 @@ spec:
     ingresses:
     - name: jupiter
       port: 8888
+    - name: open-webui
+      port: 8080
     dashboards:
     - name: Jupiter
       url: "$(ingress_protocol)://jupiter-$(session_name).$(ingress_domain)/lab?token=''"
+    - name: Open WebUI
+      url: "$(ingress_protocol)://open-webui-$(session_name).$(ingress_domain)/"
     objects:
     - apiVersion: apps/v1
       kind: Deployment
@@ -63,3 +67,76 @@ spec:
             containers:
             - name: ollama
               image: ollama/ollama:latest
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: open-webui-pvc
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "3Gi"
+            cpu: "900m"
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: open-webui-deployment
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: open-webui
+        template:
+          metadata:
+            labels:
+              app: open-webui
+          spec:
+            containers:
+            - name: open-webui
+              image: ghcr.io/open-webui/open-webui:main
+              env:
+              - name: OLLAMA_BASE_URL
+                value: "http://ollama:11434"
+              - name: WEBUI_SECRET_KEY
+                value: "educates-demo-secret-key"
+              volumeMounts:
+              - name: webui-data
+                mountPath: /app/backend/data
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "3Gi"
+                  cpu: "900m"
+            volumes:
+            - name: webui-data
+              persistentVolumeClaim:
+                claimName: open-webui-pvc
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: ollama
+      spec:
+        type: ClusterIP
+        ports:
+        - port: 11434
+          targetPort: 11434
+        selector:
+          deployment: ollama
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: open-webui
+      spec:
+        type: ClusterIP
+        ports:
+        - port: 8080
+          targetPort: 8080
+        selector:
+          app: open-webui
