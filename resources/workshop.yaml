@@ -73,12 +73,12 @@ spec:
                 mountPath: /root/.ollama
               resources:
                 requests:
+                  memory: "2Gi"
+                  cpu: "500m"
+                limits:
                   memory: "8Gi"
                   cpu: "2000m"
-                limits:
-                  memory: "16Gi"
-                  cpu: "4000m"
-            volumes:  # <- Fixed: moved to correct indentation level
+            volumes:
             - name: ollama-data
               persistentVolumeClaim:
                 claimName: ollama-pvc
