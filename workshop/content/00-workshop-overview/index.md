@@ -6,12 +6,10 @@ Welcome to DCAI Lab.
 
 Here we can test ....
 
-
+Download 
 ```execute-2
-ls
+curl -X POST url http://ollama.$SESSION_NAMESPACE:11434/api/pull \
+  -H "Content-Type: application/json" \
+  -d '{"name": "qwen3:0.6b"}'
 ```
 
-```dashboard:create-dashboard
-name: OpenWebui
-url: http://open-webui.$SESSION_NAMESPACE:3000
-```
