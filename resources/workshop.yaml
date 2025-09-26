@@ -19,7 +19,7 @@ spec:
     patches:
       runtimeClassName: nvidia
     namespaces:
-      budget: xx-large
+      #budget: xx-large
       security:
         policy: baseline
     applications:
@@ -68,6 +68,9 @@ spec:
             containers:
             - name: ollama
               image: ollama/ollama:latest
+              env:
+              - name: OLLAMA_MAX_LOADED_MODELS
+                value: "1"
               volumeMounts:
               - name: ollama-data
                 mountPath: /root/.ollama
@@ -76,8 +79,8 @@ spec:
                   memory: "2Gi"
                   cpu: "500m"
                 limits:
-                  memory: "8Gi"
-                  cpu: "2000m"
+                  memory: "16Gi"
+                  cpu: "8000m"
             volumes:
             - name: ollama-data
               persistentVolumeClaim:
