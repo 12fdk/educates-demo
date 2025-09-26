@@ -6,7 +6,7 @@ Welcome to DCAI Lab.
 
 Here we can test ....
 
-Download 
+Download qwen3:0.6b model
 ```execute-2
 curl -X POST url http://ollama.$SESSION_NAMESPACE:11434/api/pull \
   -H "Content-Type: application/json" \
