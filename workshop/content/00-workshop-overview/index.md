@@ -1,15 +1,9 @@
 ---
 title: DCAI Lab
 ---
-![DCAI Logo](DCAI_Logolockup_horizontal_Black_RGB.svg)
+![DCAI Logo]({{<baseurl>}}/DCAI_Logolockup_horizontal_Black_RGB.svg)
 Welcome to DCAI Lab. 
 
-Here we can test ....
+We have setup a suite of tools, for you to test and learn, in a safe enviroment.
 
-Download qwen3:0.6b model
-```execute-2
-curl -X POST url http://ollama.$SESSION_NAMESPACE:11434/api/pull \
-  -H "Content-Type: application/json" \
-  -d '{"name": "qwen3:0.6b"}'
-```
-
+Continue to the next page, so learn more about what you can do.

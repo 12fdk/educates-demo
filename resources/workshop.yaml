@@ -36,6 +36,8 @@ spec:
         enabled: false
       vcluster:
         enabled: false
+      uploads:
+        enabled: true
     ingresses:
     - name: jupiter
       port: 8888
