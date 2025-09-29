@@ -7,8 +7,9 @@ touch ~/.bashrc
 pip install jupyterlab 
 
 # Install Opencoder
-curl -fsSL https://opencode.ai/install | bash
-npm install -g opencode-ai
+#curl -fsSL https://opencode.ai/install | bash
+#npm install -g opencode-ai
+cp opencode /home/eduk8s/bin
 
 mkdir -p ~/.config/opencode/
 

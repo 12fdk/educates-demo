@@ -16,6 +16,8 @@ spec:
       - /exercises/**
       - /README.md
   session:
+    resources:
+      storage: 50Gi
     patches:
       runtimeClassName: nvidia
     namespaces:
@@ -78,7 +80,7 @@ spec:
                 mountPath: /root/.ollama
               resources:
                 requests:
-                  memory: "10Gi"
+                  memory: "1Gi"
                   cpu: "500m"
                 limits:
                   memory: "100Gi"
