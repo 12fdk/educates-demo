@@ -8,6 +8,7 @@ pip install jupyterlab
 
 # Install Opencoder
 curl -fsSL https://opencode.ai/install | bash
+npm install -g opencode-ai
 
 mkdir -p ~/.config/opencode/
 
