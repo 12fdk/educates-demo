@@ -1,7 +1,7 @@
 apiVersion: training.educates.dev/v1beta1
 kind: Workshop
 metadata:
-  name: "demo"
+  name: "dcai-sandbox"
 spec:
   title: "DCAI Sandbox"
   description: "DCAI Sandbox/Demo enviroment"
@@ -16,8 +16,6 @@ spec:
       - /exercises/**
       - /README.md
   session:
-    resources:
-      storage: 50Gi
     patches:
       runtimeClassName: nvidia
     namespaces:
