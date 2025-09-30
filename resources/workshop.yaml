@@ -16,6 +16,8 @@ spec:
       - /exercises/**
       - /README.md
   session:
+    resources:
+      storage: 10Gi
     patches:
       runtimeClassName: nvidia
     namespaces:
@@ -87,6 +89,16 @@ spec:
             - name: ollama-data
               persistentVolumeClaim:
                 claimName: ollama-pvc
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: workshop
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
