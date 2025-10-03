@@ -46,11 +46,16 @@ spec:
     - name: open-webui
       host: open-webui.$(session_namespace)
       port: 3000
+    - name: rstudio
+      host: rstudio.$(session_namespace)
+      port: 8787
     dashboards:
     - name: Jupiter
       url: "$(ingress_protocol)://jupiter-$(session_name).$(ingress_domain)/lab?token=''"
     - name: Open WebUI
       url: "$(ingress_protocol)://open-webui-$(session_name).$(ingress_domain)"
+    #- name: rStudio
+    #  url: "$(ingress_protocol)://rstudio-$(session_name).$(ingress_domain)/auth-sign-in"
     objects:
     - apiVersion: apps/v1
       kind: Deployment
@@ -80,8 +85,8 @@ spec:
                 mountPath: /root/.ollama
               resources:
                 requests:
-                  memory: "1Gi"
-                  cpu: "500m"
+                  memory: "512Mi"
+                  cpu: "250m"
                 limits:
                   memory: "100Gi"
                   cpu: "8000m"
@@ -89,6 +94,93 @@ spec:
             - name: ollama-data
               persistentVolumeClaim:
                 claimName: ollama-pvc
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: open-webui-deployment
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: open-webui
+        template:
+          metadata:
+            labels:
+              app: open-webui
+          spec:
+            runtimeClassName: nvidia
+            containers:
+            - name: open-webui
+              image: ghcr.io/open-webui/open-webui:main
+              env:
+              - name: OLLAMA_BASE_URL
+                value: "http://ollama.$(session_namespace):11434"
+              - name: WEBUI_SECRET_KEY
+                value: "educates-demo-secret-key"
+              - name: WEBUI_AUTH
+                value: "false"
+              - name: ENABLE_VERSION_UPDATE_CHECK
+                value: "false"
+              - name: WEBUI_NAME
+                value: "DCAI Open-WebUI"
+              volumeMounts:
+              - name: webui-data
+                mountPath: /app/backend/data
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "3Gi"
+                  cpu: "900m"
+            volumes:
+            - name: webui-data
+              persistentVolumeClaim:
+                claimName: open-webui-pvc
+    - apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: rstudio-config
+      data:
+        rserver.conf: |
+          www-frame-origin=none
+
+    - apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: rstudio
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: rstudio
+        template:
+          metadata:
+            labels:
+              app: rstudio
+          spec:
+            runtimeClassName: nvidia
+            containers:
+            - name: rstudio
+              image: rocker/rstudio
+              env:
+              - name: PASSWORD
+                value: "rstudio"
+              volumeMounts:
+              - name: rstudio-config
+                mountPath: /etc/rstudio/rserver.conf
+                subPath: rserver.conf
+              resources:
+                requests:
+                  memory: "512Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "3Gi"
+                  cpu: "900m"
+            volumes:
+            - name: rstudio-config
+              configMap:
+                name: rstudio-config
     - apiVersion: v1
       kind: PersistentVolumeClaim
       metadata:
@@ -119,48 +211,7 @@ spec:
         resources:
           requests:
             storage: 50Gi
-    - apiVersion: apps/v1
-      kind: Deployment
-      metadata:
-        name: open-webui-deployment
-      spec:
-        replicas: 1
-        selector:
-          matchLabels:
-            app: open-webui
-        template:
-          metadata:
-            labels:
-              app: open-webui
-          spec:
-            containers:
-            - name: open-webui
-              image: ghcr.io/open-webui/open-webui:main
-              env:
-              - name: OLLAMA_BASE_URL
-                value: "http://ollama.$(session_namespace):11434"
-              - name: WEBUI_SECRET_KEY
-                value: "educates-demo-secret-key"
-              - name: WEBUI_AUTH
-                value: "false"
-              - name: ENABLE_VERSION_UPDATE_CHECK
-                value: "false"
-              - name: WEBUI_NAME
-                value: "DCAI Open-WebUI"
-              volumeMounts:
-              - name: webui-data
-                mountPath: /app/backend/data
-              resources:
-                requests:
-                  memory: "512Mi"
-                  cpu: "250m"
-                limits:
-                  memory: "3Gi"
-                  cpu: "900m"
-            volumes:
-            - name: webui-data
-              persistentVolumeClaim:
-                claimName: open-webui-pvc
+    
     - apiVersion: v1
       kind: Service
       metadata:
@@ -183,3 +234,14 @@ spec:
           targetPort: 8080
         selector:
           app: open-webui
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: rstudio
+      spec:
+        type: ClusterIP
+        ports:
+        - port: 8787
+          targetPort: 8787
+        selector:
+          app: rstudio
